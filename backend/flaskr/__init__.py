@@ -37,13 +37,25 @@ def create_app(test_config=None):
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
     response.headers.add('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS')
     return response
-    
+  
   '''
   @TODO: 
   Create an endpoint to handle GET requests 
   for all available categories.
   '''
-
+  @app.route('/categories')
+  def get_categories():
+    selection = Category.query.order_by(Category.id).all()
+    categories_list = Category.query.order_by(Category.id).all()
+    categories = {}
+    for category in categories_list:
+      categories[category.id] = category.type
+    
+    return jsonify({
+      'success': True,
+      'categories': categories,
+      'total_categories': len(Category.query.all())
+    })
 
   '''
   @TODO: 
