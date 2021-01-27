@@ -86,7 +86,7 @@ def create_app(test_config=None):
       'success': True,
       'questions': current_questions, 
       'categories': categories,
-      'total_questions': len(Question.query.all())
+      'total_questions': Question.query.count()
     })
 
   '''
@@ -108,7 +108,6 @@ def create_app(test_config=None):
 
       return jsonify({
         'success': True,
-        'id': question.id
       })
 
   '''
@@ -232,7 +231,7 @@ def create_app(test_config=None):
         'success': True,
         'question': question.format(),
       })
-      
+
     except:
       abort(400)
   '''
