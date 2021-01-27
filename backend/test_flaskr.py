@@ -50,7 +50,7 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data['success'])
-        self.assertTrue(data['total_questions'])
+        self.assertEqual(data['total_questions'], Question.query.count())
         self.assertTrue(len(data['questions']))
 
     def test_404_sent_requesting_beyond_valid_page(self):
@@ -61,7 +61,23 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'resource not found')
 
-    
+    def test_question_delete(self):
+        id = self.question.id
+        res = self.client().delete(f'/questions/{self.question.id}')
+        data = json.loads(res.data)
+        
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data['success'])
+        self.assertEqual(Question.query.filter(Question.id == id).one_or_none(), None)
+
+    def test_404_delete_if_doesnt_exist(self):
+        res = self.client().delete(f'/questions/1000')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'resource not found')
+
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
