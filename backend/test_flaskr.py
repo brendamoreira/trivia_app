@@ -24,10 +24,16 @@ class TriviaTestCase(unittest.TestCase):
             self.db.init_app(self.app)
             # create all tables
             self.db.create_all()
-    
+        
+        self.question = Question(question='new question', answer='answer fake', difficulty=1, category='category')
+        self.question.insert()
+
     def tearDown(self):
         """Executed after reach test"""
-        pass
+        with self.app.app_context():
+            self.db.session.query(Question).delete()
+            self.db.session.commit()
+
 
     """
     TODO
