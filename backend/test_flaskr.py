@@ -71,12 +71,29 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(Question.query.filter(Question.id == id).one_or_none(), None)
 
     def test_404_delete_if_doesnt_exist(self):
-        res = self.client().delete(f'/questions/1000')
+        res = self.client().delete('/questions/1000')
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'resource not found')
+
+    def test_create_question(self):
+        res = self.client().post('/questions', json=self.question.format())
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['created'])
+        self.assertTrue(len(data['questions']))
+
+    def test_405_if_question_creation_not_allowed(self):
+        res = self.client().post('/questions/1000', json=self.question.format())
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 405)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'method not allowed')
 
 
 # Make the tests conveniently executable

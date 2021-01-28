@@ -143,7 +143,7 @@ def create_app(test_config=None):
         'total_questions': len(Question.query.all())
       })
     except:
-      abort(422)
+      abort(405)
 
 
 
