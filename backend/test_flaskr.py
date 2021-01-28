@@ -106,7 +106,22 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
 
+    def test_play_quiz(self):
+        for i in range(10):
+            question = Question(question='new question', answer='answer fake', difficulty=1, category='category')
+            question.insert()
+        previous_questions = []
+        for question in Question.query.all():            
+            res = self.client().post('/quizzes', json={'previous_questions': previous_questions})
+            data = json.loads(res.data)
+            self.assertNotIn(data['question']['id'], previous_questions)
 
+            previous_questions.append(question.id)
+        
+        res = self.client().post('/quizzes', json={'previous_questions': previous_questions})
+        data = json.loads(res.data)
+        self.assertEqual(data['question'], None)
+            
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
