@@ -211,26 +211,22 @@ def create_app(test_config=None):
   '''
   @app.route('/quizzes', methods=['POST'])
   def play_quiz():
-    try:
-      body = request.get_json()
-      previous_questions = body.get('previous_questions', [])
-      quiz_category = body.get('quiz_category', {})
-      questions_query = Question.query.filter(Question.id.notin_(previous_questions))
+    body = request.get_json()
+    previous_questions = body.get('previous_questions', [])
+    quiz_category = body.get('quiz_category', {'id': 0})
+    questions_query = Question.query.filter(Question.id.notin_(previous_questions))
+    
+    if quiz_category['id'] != 0:
+      questions_query = questions_query.filter(Question.category == quiz_category['id'])
+    all_questions = questions_query.all()
+    question = random.choice(all_questions).format() if len(all_questions) else None
+
+    return jsonify({
+      'success': True,
+      'question': question,
+    })
+
       
-      if quiz_category['id'] != 0:
-        questions_query = questions_query.filter(Question.category == quiz_category['id'])
-      question = random.choice(questions_query.all())
-
-      if question is None:
-        abort(404)
-
-      return jsonify({
-        'success': True,
-        'question': question.format(),
-      })
-
-    except:
-      abort(400)
   '''
   @TODO: 
   Create error handlers for all expected errors 
