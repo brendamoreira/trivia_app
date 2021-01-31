@@ -72,9 +72,12 @@ This README is missing documentation of your endpoints. Below is an example for 
 
 Endpoints
 GET '/categories'
-GET ...
-POST ...
-DELETE ...
+GET '/questions'
+DELETE '/questions/<question_id>'
+POST '/questions'
+POST '/questions/search'
+GET '/categories/<category_id>/questions'
+POST /quizzes
 
 GET '/categories'
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
@@ -87,8 +90,100 @@ GET '/categories'
 '5' : "Entertainment",
 '6' : "Sports"}
 
-```
+GET '/questions'
+- Fetches a list of questions
+- Request Arguments: None
+- Returns: An object with a list of questions, number of total questions, current category and categories.
+{
+  "categories": {
+    "1": "Science", 
+    "2": "Art", 
+    "3": "Geography", 
+    "4": "History", 
+    "5": "Entertainment", 
+    "6": "Sports"
+  }, 
+  "questions": [
+    {
+      "answer": "Apollo 13", 
+      "category": 5, 
+      "difficulty": 4, 
+      "id": 2, 
+      "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+    }, 
+}
 
+GET '/categories/<category_id>/questions'
+- Fetches a list of questions based on a category.
+- Request Argument: category_id
+{
+  "current_category": 1, 
+  "questions": [
+    {
+      "answer": "The Liver", 
+      "category": 1, 
+      "difficulty": 4, 
+      "id": 20, 
+      "question": "What is the heaviest organ in the human body?"
+    }, 
+    ], 
+  "success": true, 
+  "total_questions": 1
+}
+
+POST '/questions'
+- Creates a new question
+
+{
+    "created": 31,
+    "questions": [
+      {
+        "answer": "Apollo 13",
+        "category": 5,
+        "difficulty": 4,
+        id: 2
+      },
+      ], 
+    "success": true,
+    "total_questions": 25
+}
+
+POST '/questions/search'
+- Fetches a list of questions based on a search term
+
+{
+    "current_category": null,
+    "questions": [
+        {
+            "answer": "Apollo 13",
+            "category": 5,
+            "difficulty": 4,
+            "id": 2
+            },
+            ],
+    "success": true,
+    "total_questions": 25
+}
+
+DELETE '/questions/<question_id>'
+- Deletes question based on the ID
+- Request Arguments: question_id
+
+{"success": true}
+
+POST /quizzes
+- Fetches a question from a selected category, won't show previous questions asked on that game.
+
+{"question": {
+    "answer": "Mona Lisa", 
+    "category": 2,
+    "difficulty": 3,
+    "id": 17,
+    "question": "La Giaconda is better known as what?"
+    },
+"success": true
+}
+```
 
 ## Testing
 To run the tests, run
